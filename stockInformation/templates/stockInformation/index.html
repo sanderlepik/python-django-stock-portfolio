@@ -31,18 +31,18 @@
           	<td data-title="Price">{{ stock.price|floatformat:2 }}</td>
 
 			{% if stock.change >= 0 %}
-				<td class='up' data-title="Change">{{ stock.change|floatformat:2 }}</td>
+				<td class='up' data-title="Change">+{{ stock.change|floatformat:2 }}</td>
 			{% else %}
 				<td class='down' data-title="Change">{{ stock.change|floatformat:2 }}</td>
 			{% endif %}
 
 			<td data-title="Owned">{{ stock.stocks_owned }}</td>
-			<td data-title="Bprice">{{ stock.buying_price }}</td>
+			<td data-title="Bprice">{{ stock.buying_price|floatformat:2 }}</td>
 
 			{% if stock.balance > 0 %}
-				<td class='up' data-title="Balance">{{ stock.balance}}</td>
+				<td class='up' data-title="Balance">+{{ stock.balance|floatformat:1 }}</td>
 			{% else %}
-				<td class="down" data-title="Balance">{{ stock.balance}}</td>
+				<td class="down" data-title="Balance">{{ stock.balance|floatformat:1 }}</td>
 			{% endif %}
 
         </tr>
@@ -98,6 +98,9 @@
 					<span class="up">{{ delete_success_message }}</span>
 				{% endif %}
 			</form>
+		</div>
+		<div>
+			<p>{{ nr_of_stocks }}</p>
 		</div>
 	</div>
 

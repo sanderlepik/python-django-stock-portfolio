@@ -124,14 +124,25 @@ def update_stock_table(request):
                 }
                 return render(request, 'stockInformation/index.html', context)
 
-    # if there was no POST request
-    context = {
-        'stock_list': stock_list,
-        'today_date': today_date,
-        # 'values': [['january', 1.62], ['february', 1.66], ['march', 1.69], ['april', 1.62],
-        # ['may', 1.58], ['june', 1.72], ['july', 1.75],
-        # ['august', 1.75], ['september', 1.75], ['october', 1.75], ['november', 1.75], ['december', 1.75]]
-    }
-    return render(request, 'stockInformation/index.html', context)
+    else:  # if there was no POST request - the whole portfolio should be updated
+
+        stocks = Stocks.objects.all()
+
+        for stock in stocks:
+            stock_object = Share(stock.symbol)
+
+            stock.price = stock_object.get_price()
+            stock.change = stock_object.get_change()
+
+            stock.save(update_fields=['price', 'change'])
+
+        context = {
+            'stock_list': stock_list,
+            'today_date': today_date
+            # 'values': [['january', 1.62], ['february', 1.66], ['march', 1.69], ['april', 1.62],
+            # ['may', 1.58], ['june', 1.72], ['july', 1.75],
+            # ['august', 1.75], ['september', 1.75], ['october', 1.75], ['november', 1.75], ['december', 1.75]]
+        }
+        return render(request, 'stockInformation/index.html', context)
 
 
