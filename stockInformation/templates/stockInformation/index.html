@@ -1,7 +1,9 @@
 <div id="demo">
+{% load googlecharts %}
 <head>
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+<body>
   <h1>Stock prices</h1>
   <h2>Table of stocks that are under watch (list was updated {{ today_date }})</h2>
   
@@ -11,41 +13,144 @@
   <!-- Table starts here -->
   <table id="table" class="table table-hover table-mc-light-blue">
       <thead>
-        <tr>
-          <th>Symbol</th>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Change</th>
+	  	<tr>
+			<th>Symbol</th>
+          	<th>Name</th>
+          	<th>Current price</th>
+          	<th>Daily change</th>
+		  	<th>Stocks owned</th>
+			<th>Buying price</th>
+		  	<th>Balance</th>
         </tr>
       </thead>
       <tbody>
       	{% for stock in stock_list %}
         <tr>
-          <td data-title="ID">{{ stock.symbol }}</td>
-          <td data-title="Name">{{ stock.name }}</td>
-          <td data-title="Price">{{ stock.price|floatformat:2 }}</td>
-          <td data-title="Change">{{ stock.change|floatformat:2 }}</td>
+          	<td data-title="ID">{{ stock.symbol }}</td>
+          	<td data-title="Name">{{ stock.name }}</td>
+          	<td data-title="Price">{{ stock.price|floatformat:2 }}</td>
+
+			{% if stock.change >= 0 %}
+				<td class='up' data-title="Change">{{ stock.change|floatformat:2 }}</td>
+			{% else %}
+				<td class='down' data-title="Change">{{ stock.change|floatformat:2 }}</td>
+			{% endif %}
+
+			<td data-title="Owned">{{ stock.stocks_owned }}</td>
+			<td data-title="Bprice">{{ stock.buying_price }}</td>
+
+			{% if stock.balance > 0 %}
+				<td class='up' data-title="Balance">{{ stock.balance}}</td>
+			{% else %}
+				<td class="down" data-title="Balance">{{ stock.balance}}</td>
+			{% endif %}
+
         </tr>
         {% endfor %}
       </tbody>
     </table>
   	</div>
-  	<form method="post">
-	  	{% csrf_token %}
-	    <label for="new_stock">Add new stock: </label>
-	    <input id="new_stock" type="text" name="new_stock" value="{{ new_stock }}">
-	    <input type="submit" value="OK">
-	    <span class="down">{{ error_message }}{{ stock_exists_message }}</span>
-        <span class="up">{{ add_success_message }}</span>
-	</form>
-    <form method="post">
-	  	{% csrf_token %}
-	    <label for="remove_stock">Remove stock from portfolio: </label>
-	    <input id="remove_stock" type="text" name="remove_stock" value="{{ remove_stock }}">
-	    <input type="submit" value="OK">
-	    <span class="down">{{ remove_error_message }}</span>
-        <span class="up">{{ delete_success_message }}</span>
-	</form>
+	<div id="stock_actions">
+		<div id="add_stocks">
+			<form method="post">
+				{% csrf_token %}
+				<strong for="new_stock">Add new stock: </strong>
+				<div class="block">
+					<label>Symbol</label>
+					<input id="new_stock" type="text" name="new_stock" value="{{ new_stock }}">
+				</div>
+				<div class="block">
+					<label>Stocks bought</label>
+					<input id="stocks_bought" type="text" name="stocks_bought" value="{{ stocks_bought }}">
+				</div>
+				<div class="block">
+					<label>Buying price</label>
+					<input id="buying_price" type="text" name="buying_price" value="{{ buying_price }}">
+				</div>
+				<div class="block">
+					<input class="ok" type="submit" value="OK">
+				</div>
+
+				{% if error_message %}
+					<span class="down">{{ error_message }}{{ stock_exists_message }}</span>
+				{% endif %}
+				{% if add_success_message %}
+					<span class="up">{{ add_success_message }}</span>
+				{% endif %}
+			</form>
+		</div>
+		<div id="remove_stocks">
+			<form method="post">
+				{% csrf_token %}
+				<strong for="remove_stock">Remove stock: </strong>
+				<div class="block">
+					<label>Symbol</label>
+					<input id="remove_stock" type="text" name="remove_stock" value="{{ remove_stock }}">
+				</div>
+				<div class="block">
+					<input class="ok" type="submit" value="OK">
+				</div>
+
+				{% if remove_error_message %}
+					<span class="down">{{ remove_error_message }}{{ invalid_remove_form }}</span>
+				{% endif %}
+				{% if delete_success_message %}
+					<span class="up">{{ delete_success_message }}</span>
+				{% endif %}
+			</form>
+		</div>
+	</div>
+
+	<!--<div>
+		{% if values %}
+
+		<div class="container_12">
+			<div class="grid_12">
+				<h1>django-google-charts</h1>
+				<h2>Stock prices in line graph</h2>
+				<div id="values" class="wide graph table-responsive-vertical shadow-z-1"></div>
+			</div>
+		</div>
+
+
+		{% googlecharts %}
+			{% data values "count_0" %}
+				{% col "string" "Name" %}"{{ val }}"{% endcol %}
+				{% col "number" "Value" %}{{ val }}{% endcol %}
+			{% enddata %}
+
+
+			options = {
+				gridlineColor: "#ddd",
+				colors: ["b3e5fc"],
+				backgroundColor: "#ffffff",
+				legend: "none",
+				vAxis: {minValue: 0},
+				chartArea: {},
+			};
+
+			options_wide = _clone(options);
+
+
+			{% options "opt_count" %}
+				kind: "LineChart",
+				options: options
+			{% endoptions %}
+
+			{% options "opt_count_wide" %}
+				kind: "LineChart",
+				options: options_wide
+			{% endoptions %}
+
+
+			{% graph "values" "count_0" "opt_count_wide" %}
+
+		{% endgooglecharts %}
+	{% endif %}
+	</div>-->
+
+
+</body>
 
   </script>
   
@@ -63,12 +168,33 @@
 }
 /* -- Demo style ------------------------------- */
 
-.up {
-    color: #093;
+#add_stocks {
+	float:left
 }
-.down {
-    color: #d14836;
+
+#remove_stocks {
+	margin-left: 15px;
+	float:right
 }
+
+
+
+input {
+  width: 75px;
+}
+
+.ok {
+	width: auto;
+	height: auto;
+	font-size: 10px;
+}
+
+label {
+  display: inline-block;
+  width: 100px;
+  text-align: left;
+  margin-bottom: 5px;
+}​
 
 html,
 body {
@@ -298,6 +424,13 @@ body {
   .table-responsive-vertical .table-hover.table-mc-light-blue > tbody > tr > td:hover {
     background-color: #b3e5fc;
   }
+}
+
+.up {
+    color: #093;
+}
+.down {
+    color: #d14836;
 }
   </style>
 </div>
