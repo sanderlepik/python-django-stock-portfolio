@@ -1,0 +1,42 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+
+body {
+  padding-top: 2rem;
+}
+
+#form-ok-btn, #form-ok-btn1 {
+  margin-top: 2px;
+}
+
+.form-control {
+  margin-top: 2px;
+}
+
+.up {
+  color: #093;
+}
+
+.down {
+  color: #d14836;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .5rem .75rem;
+    font-size: 0.75rem;
+    line-height: 1.15;
+}
+
+th {
+    background-color: #01579b;
+    color: white;
+}
+
+.navbar {
+    background-color: #01579b;
+}
+
+.jumbotron {
+    background-color: #eceff1;
+}

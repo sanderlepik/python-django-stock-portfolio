@@ -1,0 +1,112 @@
+{% extends 'stockinformation/base.html' %}
+
+    {% block header %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1 class="display-3">Investments portfolio</h1>
+        <p>This is stock portfolio made with python django</p>
+      </div>
+    </div>
+    {% endblock %}
+
+    <div class="container">
+
+      {% block content %}
+      <h1>Stocks portfolio</h1>
+
+      <table id="table" class="table table-hover" style="border: 1px solid: #ddd !important;">
+          <thead class="thead">
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Current price</th>
+                <th>Daily change</th>
+                <th>Stocks owned</th>
+                <th>Buying price</th>
+                <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for stock in stock_list %}
+            <tr>
+                <td data-title="ID">{{ stock.symbol }}</td>
+                <td data-title="Name">{{ stock.name }}</td>
+                <td data-title="Price">{{ stock.price|floatformat:2 }}</td>
+
+                {% if stock.change >= 0 %}
+                    <td class='up' data-title="Change">+{{ stock.change|floatformat:2 }}</td>
+                {% else %}
+                    <td class='down' data-title="Change">{{ stock.change|floatformat:2 }}</td>
+                {% endif %}
+
+                <td data-title="Owned">{{ stock.stocks_owned }}</td>
+                <td data-title="Bprice">{{ stock.buying_price|floatformat:2 }}</td>
+
+                {% if stock.balance > 0 %}
+                    <td class='up' data-title="Balance">+{{ stock.balance|floatformat:1 }}</td>
+                {% else %}
+                    <td class="down" data-title="Balance">{{ stock.balance|floatformat:1 }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- Example row of columns -->
+      <div id="stock_actions" class="row">
+        <div class="col-sm-2">
+          <h6>Add new stock: </h6>
+          <form method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="block">
+                            <input class="form-control" id="new_stock" type="text" name="new_stock" placeholder="Symbol" value="{{ new_stock }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input class="form-control" id="stocks_bought" type="text" name="stocks_bought" placeholder="Count" value="{{ stocks_bought }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input class="form-control" id="buying_price" type="text" name="buying_price" placeholder="Price" value="{{ buying_price }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input id="form-ok-btn" class="btn btn-outline-primary btn-sm" type="submit" value="OK">
+                        </div>
+
+                        {% if error_message %}
+                            <span class="down">{{ error_message }}{{ stock_exists_message }}</span>
+                        {% endif %}
+                        {% if add_success_message %}
+                            <span class="up">{{ add_success_message }}</span>
+                        {% endif %}
+                    </form>
+        </div>
+        <div class="col-sm-2">
+          <h6>Remove stock: </h6>
+          <form method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="block" class="form-group">
+                            <input id="remove_stock" class="form-control" type="text" name="remove_stock" placeholder="Symbol" value="{{ remove_stock }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input id="form-ok-btn1" class="btn btn-outline-primary btn-sm" type="submit" value="OK">
+                        </div>
+
+                        {% if remove_error_message %}
+                            <span class="down">{{ remove_error_message }}{{ invalid_remove_form }}</span>
+                        {% endif %}
+                        {% if delete_success_message %}
+                            <span class="up">{{ delete_success_message }}</span>
+                        {% endif %}
+          </form>
+       </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Sander Lepik 2017</p>
+      </footer>
+
+    {% endblock %}
+    </div>
+
+

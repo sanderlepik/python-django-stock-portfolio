@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from yahoo_finance import Share
 import time
+import decimal
 from .models import Stocks
 from .forms import StockForm
 
@@ -12,7 +13,7 @@ def update_stock_table(request):
     Another possibility: https://query.yahooapis.com/v1/public/yql?q=select%20Ask%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22GOOGL%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=
     
     :param request: POST request that defines weather to add or remove stock options to portfolio
-    :return: index.html with context dictionary that has all the stock options that you have added to portfolio
+    :return: portfolio.html with context dictionary that has all the stock options that you have added to portfolio
     """
 
     stock_list = Stocks.objects.order_by('price')[:10]
@@ -62,7 +63,7 @@ def update_stock_table(request):
                             'today_date': today_date,
                             'add_success_message': add_success_message,
                         }
-                        return render(request, 'stockInformation/index.html', context)
+                        return render(request, 'stockInformation/portfolio.html', context)
 
                     except Exception:  # if symbol is not correct
                         pass
@@ -73,7 +74,7 @@ def update_stock_table(request):
                             'today_date': today_date,
                             'error_message': error_message,
                         }
-                        return render(request, 'stockInformation/index.html', context)
+                        return render(request, 'stockInformation/portfolio.html', context)
 
                 else:  # if symbol is already in your portfolio
                     stock_exists_message = "Stock is already in your portfolio!"
@@ -83,7 +84,7 @@ def update_stock_table(request):
                         'today_date': today_date,
                         'stock_exists_message': stock_exists_message,
                     }
-                    return render(request, 'stockInformation/index.html', context)
+                    return render(request, 'stockInformation/portfolio.html', context)
 
             else:  # if form was incorrectly filled in
                 error_message = "Invalid form!"
@@ -93,7 +94,7 @@ def update_stock_table(request):
                     'today_date': today_date,
                     'error_message': error_message,
                 }
-                return render(request, 'stockInformation/index.html', context)
+                return render(request, 'stockInformation/portfolio.html', context)
 
     elif 'remove_stock' in request.POST:  # if user was trying to remove stock from portfolio
 
@@ -112,7 +113,7 @@ def update_stock_table(request):
                     'today_date': today_date,
                     'delete_success_message': delete_success_message,
                 }
-                return render(request, 'stockInformation/index.html', context)
+                return render(request, 'stockInformation/portfolio.html', context)
 
             else:  # if user entered stock symbol that is not in portfolio or is invalid
                 remove_error_message = "Insert correct symbol!"
@@ -122,19 +123,23 @@ def update_stock_table(request):
                     'today_date': today_date,
                     'remove_error_message': remove_error_message,
                 }
-                return render(request, 'stockInformation/index.html', context)
+                return render(request, 'stockInformation/portfolio.html', context)
 
     else:  # if there was no POST request - the whole portfolio should be updated
 
-        stocks = Stocks.objects.all()
+        stocks = Stocks.objects.all()  # This returns queryset
 
         for stock in stocks:
             stock_object = Share(stock.symbol)
 
-            stock.price = stock_object.get_price()
+            stock.price = decimal.Decimal(stock_object.get_price())
             stock.change = stock_object.get_change()
 
-            stock.save(update_fields=['price', 'change'])
+            balance = (stock.stocks_owned * stock.price) - (stock.stocks_owned * stock.buying_price)
+            stock.balance = balance
+
+            stock.save(update_fields=['price', 'change', 'balance'])  # do not create new object in db,
+            # update current lines
 
         context = {
             'stock_list': stock_list,
@@ -143,6 +148,11 @@ def update_stock_table(request):
             # ['may', 1.58], ['june', 1.72], ['july', 1.75],
             # ['august', 1.75], ['september', 1.75], ['october', 1.75], ['november', 1.75], ['december', 1.75]]
         }
-        return render(request, 'stockInformation/index.html', context)
+        return render(request, 'stockInformation/portfolio.html', context)
 
 
+def new_view(request):
+    context = {
+    }
+
+    return render(request, 'stockInformation/base.html', context)
