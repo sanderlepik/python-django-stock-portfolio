@@ -1,0 +1,266 @@
+{% extends 'stockinformation/base.html' %}
+
+    {% block header %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1 class="display-3">Investments portfolio</h1>
+        <p>This is stock portfolio made with python django</p>
+      </div>
+    </div>
+    {% endblock %}
+
+    <div class="container">
+
+      {% block content %}
+      <h1>Mintos</h1>
+
+      <table id="table" class="table table-hover table-bordered table-nonfluid" style="border: 1px solid: #ddd !important;">
+          <thead class="thead">
+            <tr>
+                <th>Month</th>
+                <th>Deposits</th>
+                <th>Interest received</th>
+                <th>Change</th>
+                <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td data-title="month">January</td>
+                <td data-title="deposits">1000</td>
+                <td data-title="interest">20.56</td>
+                <td class='up' data-title="change">+21</td>
+                <td class='up' data-title="balance">2359</td>
+            </tr>
+            <tr>
+                <td data-title="ID">February</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="month">January</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="ID">March</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="month">April</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="ID">May</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="month">June</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="ID">July</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="month">August</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="ID">September</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="month">October</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="ID">November</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+            <tr>
+                <td data-title="ID">December</td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td class='up' data-title="Change"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Example row of columns -->
+      <div id="stock_actions" class="row">
+        <div class="col-sm-2">
+          <h6>Add new stock: </h6>
+          <form method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="block">
+                            <input class="form-control" id="new_stock" type="text" name="new_stock" placeholder="Symbol" value="{{ new_stock }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input class="form-control" id="stocks_bought" type="text" name="stocks_bought" placeholder="Count" value="{{ stocks_bought }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input class="form-control" id="buying_price" type="text" name="buying_price" placeholder="Price" value="{{ buying_price }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input id="form-ok-btn" class="btn btn-outline-primary btn-sm" type="submit" value="OK">
+                        </div>
+
+                        {% if error_message %}
+                            <span class="down"></span>
+                        {% endif %}
+                        {% if add_success_message %}
+                            <span class="up"></span>
+                        {% endif %}
+                    </form>
+        </div>
+        <div class="col-sm-2">
+          <h6>Remove stock: </h6>
+          <form method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="block" class="form-group">
+                            <input id="remove_stock" class="form-control" type="text" name="remove_stock" placeholder="Symbol" value="{{ remove_stock }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input id="form-ok-btn1" class="btn btn-outline-primary btn-sm" type="submit" value="OK">
+                        </div>
+
+                        {% if remove_error_message %}
+                            <span class="down"></span>
+                        {% endif %}
+                        {% if delete_success_message %}
+                            <span class="up"></span>
+                        {% endif %}
+          </form>
+       </div>
+      </div>
+
+      <hr>
+
+
+            <h1>Twino</h1>
+
+      <table id="table1" class="table table-hover table-bordered" style="border: 1px solid: #ddd !important;">
+          <thead class="thead">
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Current price</th>
+                <th>Daily change</th>
+                <th>Stocks owned</th>
+                <th>Buying price</th>
+                <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td data-title="ID"></td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td data-title="Owned"></td>
+                <td data-title="Bprice"></td>
+                <td class='up' data-title="Balance"></td>
+            </tr>
+            <tr>
+                <td data-title="ID"></td>
+                <td data-title="Name"></td>
+                <td data-title="Price"></td>
+                <td class='up' data-title="Change"></td>
+                <td data-title="Owned"></td>
+                <td data-title="Bprice"></td>
+                <td class='up' data-title="Balance"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-sm-2">
+          <h6>Add new stock: </h6>
+          <form method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="block">
+                            <input class="form-control" id="" type="text" name="new_stock" placeholder="Symbol" value="{{ new_stock }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input class="form-control" id="" type="text" name="stocks_bought" placeholder="Count" value="{{ stocks_bought }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input class="form-control" id="" type="text" name="buying_price" placeholder="Price" value="{{ buying_price }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input class="btn btn-outline-primary btn-sm" type="submit" value="OK">
+                        </div>
+
+                        {% if error_message %}
+                            <span class="down"></span>
+                        {% endif %}
+                        {% if add_success_message %}
+                            <span class="up"></span>
+                        {% endif %}
+                    </form>
+        </div>
+        <div class="col-sm-2">
+          <h6>Remove stock: </h6>
+          <form method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="block" class="form-group">
+                            <input id="" class="form-control" type="text" name="remove_stock" placeholder="Symbol" value="{{ remove_stock }}">
+                        </div>
+                        <div class="block" class="form-group">
+                            <input id="1" class="btn btn-outline-primary btn-sm" type="submit" value="OK">
+                        </div>
+
+                        {% if remove_error_message %}
+                            <span class="down"></span>
+                        {% endif %}
+                        {% if delete_success_message %}
+                            <span class="up"></span>
+                        {% endif %}
+          </form>
+       </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Sander Lepik 2017</p>
+      </footer>
+
+    {% endblock %}
+    </div>
+
+

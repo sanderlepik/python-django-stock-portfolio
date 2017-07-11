@@ -14,7 +14,7 @@
       {% block content %}
       <h1>Stocks portfolio</h1>
 
-      <table id="table" class="table table-hover" style="border: 1px solid: #ddd !important;">
+      <table id="table" class="table table-hover table-bordered" style="border: 1px solid: #ddd !important;">
           <thead class="thead">
             <tr>
                 <th>Symbol</th>
@@ -24,6 +24,7 @@
                 <th>Stocks owned</th>
                 <th>Buying price</th>
                 <th>Balance</th>
+                <th></th>
             </tr>
           </thead>
           <tbody>
@@ -47,19 +48,27 @@
                 {% else %}
                     <td class="down" data-title="Balance">{{ stock.balance|floatformat:1 }}</td>
                 {% endif %}
+                <td data-title="remove" role="button">
+                    <form method="post" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="block" class="form-group">
+                            <input type="hidden" name="stock_symbol" value={{ stock.symbol }} />
+                            <input name=remove_stock class="btn btn-outline-danger btn-sm" type="submit" value="x">
+                        </div>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
 
-        <!-- Example row of columns -->
       <div id="stock_actions" class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-6">
           <h6>Add new stock: </h6>
-          <form method="post" class="form-horizontal">
+          <form method="post" class="form-inline">
                         {% csrf_token %}
                         <div class="block">
-                            <input class="form-control" id="new_stock" type="text" name="new_stock" placeholder="Symbol" value="{{ new_stock }}">
+                            <input class="form-control" id="add_stock" type="text" name="add_stock" placeholder="Symbol" value="{{ add_stock }}">
                         </div>
                         <div class="block" class="form-group">
                             <input class="form-control" id="stocks_bought" type="text" name="stocks_bought" placeholder="Count" value="{{ stocks_bought }}">
@@ -79,25 +88,6 @@
                         {% endif %}
                     </form>
         </div>
-        <div class="col-sm-2">
-          <h6>Remove stock: </h6>
-          <form method="post" class="form-horizontal">
-                        {% csrf_token %}
-                        <div class="block" class="form-group">
-                            <input id="remove_stock" class="form-control" type="text" name="remove_stock" placeholder="Symbol" value="{{ remove_stock }}">
-                        </div>
-                        <div class="block" class="form-group">
-                            <input id="form-ok-btn1" class="btn btn-outline-primary btn-sm" type="submit" value="OK">
-                        </div>
-
-                        {% if remove_error_message %}
-                            <span class="down">{{ remove_error_message }}{{ invalid_remove_form }}</span>
-                        {% endif %}
-                        {% if delete_success_message %}
-                            <span class="up">{{ delete_success_message }}</span>
-                        {% endif %}
-          </form>
-       </div>
       </div>
 
       <hr>

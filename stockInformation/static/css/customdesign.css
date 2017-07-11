@@ -1,15 +1,9 @@
-/* Move down content because we have a fixed navbar that is 50px tall */
-
 body {
   padding-top: 2rem;
 }
 
-#form-ok-btn, #form-ok-btn1 {
-  margin-top: 2px;
-}
-
 .form-control {
-  margin-top: 2px;
+  margin-right: 2px;
 }
 
 .up {
@@ -39,4 +33,22 @@ th {
 
 .jumbotron {
     background-color: #eceff1;
+}
+
+.navbar-brand {
+  padding: 0px;
+}
+
+.navbar-brand>img {
+  height: 100%;
+  padding: 15px;
+  width: auto;
+}
+
+.table-nonfluid {
+   width: auto !important;
+}
+
+.table td, th {
+   text-align: center;
 }
